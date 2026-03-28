@@ -357,11 +357,11 @@ function updateDashboardUI() {
 
     const balance = totals.income - totals.expense;
 
-    document.getElementById('totalIncomeTxt').textContent = formatCurrency(totals.income) + ' ฿';
-    document.getElementById('totalExpenseTxt').textContent = formatCurrency(totals.expense) + ' ฿';
+    document.getElementById('totalIncomeTxt').textContent = formatCurrency(totals.income);
+    document.getElementById('totalExpenseTxt').textContent = formatCurrency(totals.expense);
     
     const balanceEl = document.getElementById('totalNetTxt');
-    balanceEl.textContent = formatCurrency(Math.abs(balance)) + ' ฿';
+    balanceEl.textContent = formatCurrency(Math.abs(balance));
     
     if(balance > 0) {
         balanceEl.style.color = '#047857';
@@ -412,9 +412,13 @@ function renderTable() {
             const tr = document.createElement('tr');
             const displayIncome = t.income > 0 ? formatCurrency(t.income) : '-';
             const displayExpense = t.expense > 0 ? formatCurrency(t.expense) : '-';
+            
+            const dateSplit = t.dateStr.lastIndexOf('/');
+            const dDate = t.dateStr.substring(0, dateSplit);
+            const dYear = t.dateStr.substring(dateSplit);
 
             tr.innerHTML = `
-                <td>${t.dateStr}</td>
+                <td><span class="d-val">${dDate}</span><span class="d-year">${dYear}</span></td>
                 <td>${t.description}</td>
                 <td class="text-right text-income">${displayIncome}</td>
                 <td class="text-right text-expense">${displayExpense}</td>
@@ -451,7 +455,7 @@ function renderTable() {
         <td colspan="2" class="text-right"><i data-lucide="layers"></i> สรุปยอดรวมสุทธิทั้งตาราง</td>
         <td class="text-right text-income">${formatCurrency(grandInc)}</td>
         <td class="text-right text-expense">${formatCurrency(grandExp)}</td>
-        <td style="color:${grandNet >= 0 ? '#047857' : '#B91C1C'}">${gSign}${formatCurrency(grandNet)} ฿</td>
+        <td style="color:${grandNet >= 0 ? '#047857' : '#B91C1C'}; white-space: nowrap;" class="text-right">${gSign}${formatCurrency(grandNet)}</td>
     `;
     grandTbody.appendChild(grandTr);
     transactionTable.appendChild(grandTbody);
@@ -496,12 +500,14 @@ function renderMonthlyViews() {
         
         const net = d.inc - d.exp;
         const sign = net >= 0 ? '+' : '';
+        const mSplit = d.label.split(' ');
+        
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${d.label}</td>
+            <td><span class="d-val">${mSplit[0]}</span><span class="d-year"> ${mSplit[1]}</span></td>
             <td class="text-right text-income">${formatCurrency(d.inc)}</td>
             <td class="text-right text-expense">${formatCurrency(d.exp)}</td>
-            <td class="text-right" style="color:${net >= 0 ? '#047857' : '#B91C1C'}; font-weight:800;">${sign}${formatCurrency(net)} ฿</td>
+            <td class="text-right" style="color:${net >= 0 ? '#047857' : '#B91C1C'}; font-weight:800; white-space: nowrap;">${sign}${formatCurrency(net)}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -515,7 +521,7 @@ function renderMonthlyViews() {
         <td class="text-right"><i data-lucide="award"></i> ยอดรวมสุทธิของปี ${targetYear+543}</td>
         <td class="text-right text-income">${formatCurrency(yrInc)}</td>
         <td class="text-right text-expense">${formatCurrency(yrExp)}</td>
-        <td class="text-right" style="color:${yrNet >= 0 ? '#047857' : '#B91C1C'}">${ySign}${formatCurrency(yrNet)} ฿</td>
+        <td class="text-right" style="color:${yrNet >= 0 ? '#047857' : '#B91C1C'}; white-space: nowrap;">${ySign}${formatCurrency(yrNet)}</td>
     `;
     tbody.appendChild(gTr);
 
@@ -568,33 +574,42 @@ function renderChart(keys, mapData, year) {
     const labels = [];
     const incomes = [];
     const expenses = [];
+    
+    let lastDataIdx = -1;
 
     // Filter to only push months that have passed or have data, otherwise show 12
-    keys.forEach(k => {
+    keys.forEach((k, idx) => {
         const d = mapData.get(k);
         labels.push(THAI_MONTHS[parseInt(k.split('-')[1])-1]); // specific name
         incomes.push(d.inc);
         expenses.push(d.exp);
+        if (d.inc > 0 || d.exp > 0) lastDataIdx = idx;
     });
+    
+    // Trim empty forward space
+    const viewLimit = lastDataIdx >= 0 ? lastDataIdx + 1 : labels.length;
+    const trimLabels = labels.slice(0, viewLimit);
+    const trimIncomes = incomes.slice(0, viewLimit);
+    const trimExpenses = expenses.slice(0, viewLimit);
 
     const chartConfig = {
         type: 'bar',
         data: {
-            labels: labels,
+            labels: trimLabels,
             datasets: [
                 { 
-                    label: 'รายรับ (฿)', data: incomes, backgroundColor: '#34D399', borderRadius: 4,
+                    label: 'รายรับ (฿)', data: trimIncomes, backgroundColor: '#34D399', borderRadius: 4,
                     datalabels: { 
-                        color: '#047857', anchor: 'end', align: 'end', offset: 2, 
-                        rotation: -45, font: { weight: 'bold', size: 10 }, 
+                        color: '#047857', anchor: 'end', align: 'end', offset: 4, 
+                        rotation: -90, font: { weight: '800', size: 12, family: 'Prompt' }, 
                         formatter: (v) => v===0 ? '' : formatCompactNumber(v) 
                     }
                 },
                 { 
-                    label: 'รายจ่าย (฿)', data: expenses, backgroundColor: '#F87171', borderRadius: 4,
+                    label: 'รายจ่าย (฿)', data: trimExpenses, backgroundColor: '#F87171', borderRadius: 4,
                     datalabels: { 
-                        color: '#B91C1C', anchor: 'end', align: 'end', offset: 2, 
-                        rotation: -45, font: { weight: 'bold', size: 10 }, 
+                        color: '#B91C1C', anchor: 'end', align: 'end', offset: 4, 
+                        rotation: -90, font: { weight: '800', size: 12, family: 'Prompt' }, 
                         formatter: (v) => v===0 ? '' : formatCompactNumber(v) 
                     }
                 }
@@ -618,12 +633,12 @@ function renderChart(keys, mapData, year) {
                             });
                             const net = totalInc - totalExp;
                             const sign = net >= 0 ? '+' : '';
-                            return `\n🏦 ยอดสุทธิประจำเดือน: ${sign}${formatCurrency(net)} ฿`;
+                            return `\n🏦 ยอดสุทธิประจำเดือน: ${sign}${formatCurrency(net)}`;
                         }
                     } 
                 }
             },
-            layout: { padding: { top: 35, right: 15 } },
+            layout: { padding: { top: 55, right: 15 } },
             interaction: { mode: 'index', intersect: false }
         }
     };
@@ -634,8 +649,9 @@ function renderChart(keys, mapData, year) {
     const ctxDonut = document.getElementById('donutChart').getContext('2d');
     if (donutChartInst) donutChartInst.destroy();
     
-    const sliceInc = incomes.reduce((a,b)=>a+b, 0);
-    const sliceExp = expenses.reduce((a,b)=>a+b, 0);
+    // Evaluate total fractions using trimmed datasets only
+    const sliceInc = trimIncomes.reduce((a,b)=>a+b, 0);
+    const sliceExp = trimExpenses.reduce((a,b)=>a+b, 0);
     const totalCirc = sliceInc + sliceExp;
 
     if (totalCirc > 0) {

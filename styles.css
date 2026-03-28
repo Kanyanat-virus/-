@@ -228,14 +228,19 @@ body {
     
     /* Ensure table fits horizontally by reducing font and padding */
     .brutal-table th, .brutal-table td {
-        padding: 0.35rem 0.25rem;
+        padding: 0.35rem 0.2rem;
         font-size: 0.8rem;
     }
-    .brutal-table th { font-size: 0.85rem; }
+    .brutal-table th { font-size: 0.825rem; }
+    
+    /* Dedicated Custom Fixes for Mobile Display Real Estate Constraints */
+    .text-right { white-space: nowrap !important; font-size: 0.75rem; letter-spacing: -0.5px; }
+    .brutal-table th:last-child { white-space: nowrap; font-size: 0.75rem; }
+    .d-year { display: block; font-size: 0.75rem; opacity: 0.85; }
     
     /* Shrink the bold text in tables on mobile */
     .daily-total-row td, .grand-total-row td {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
 
     /* Stack Charts Underneath each other */
