@@ -1,0 +1,261 @@
+:root {
+    --primary: #BFDBFE; /* Pastel Blue - Primary Neobrutalism Color */
+    --primary-hover: #93C5FD;
+    --bg-main: #FDF8F5; /* Warm light background */
+    --income: #A7F3D0; /* Pastel green */
+    --expense: #FECACA; /* Pastel red */
+    --balance: #FDE047; /* Pastel yellow */
+    --border-color: #000000;
+    --border-width: 3px;
+    --shadow-solid: 4px 4px 0px 0px #000000;
+    --shadow-solid-hover: 2px 2px 0px 0px #000000;
+    --radius-brutal: 0px; /* Sharp brutalist corners */
+    --font-thai: 'Prompt', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-thai);
+    background-color: var(--bg-main);
+    color: #000;
+    padding: 2rem;
+    line-height: 1.5;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Base Neobrutalism Box Template */
+.brutal-box {
+    background-color: #fff;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-solid);
+    border-radius: var(--radius-brutal);
+    padding: 1.5rem;
+}
+
+/* Card Variations */
+.brutal-card {
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-solid);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: transform 0.1s;
+}
+
+.brutal-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px 0px #000; }
+.income-card { background-color: var(--income); }
+.expense-card { background-color: var(--expense); }
+.balance-card { background-color: var(--balance); }
+
+/* Buttons */
+.btn {
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-solid);
+    transition: all 0.1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-solid-hover);
+}
+
+.brutal-btn { background-color: var(--primary); padding: 0.75rem; }
+.brutal-btn:hover { background-color: var(--primary-hover); }
+.brutal-btn-secondary { background-color: #E2E8F0; padding: 0.75rem; }
+.brutal-btn-action { background-color: var(--primary); padding: 0.5rem 1rem; }
+
+.btn-icon i { width: 24px; height: 24px; }
+
+/* Header Elements */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary);
+}
+.header-title { display: flex; align-items: center; gap: 1rem; }
+.header-title h1 { font-weight: 800; font-size: 2rem; }
+.icon-title { width: 36px; height: 36px; stroke-width: 2.5px; }
+
+/* Filter Bar Inline Wrap */
+.filter-section {
+    background-color: #fff;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+}
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+}
+.filter-icon-wrapper {
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.35rem; /* Aligns icon vertically with inputs */
+}
+.filter-icon-wrapper i { width: 28px; height: 28px; opacity: 0.8; }
+
+.filter-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.15rem; 
+    flex: 1 1 200px; 
+}
+.reset-btn-wrapper {
+    flex: 0 0 auto;
+}
+#resetFilterBtn {
+    padding: 0.4rem 0.5rem;
+    height: 38px; /* Match input height manually */
+}
+.filter-label { font-weight: 800; font-size: 0.85rem; color: #475569; }
+.brutal-input {
+    border: var(--border-width) solid var(--border-color);
+    padding: 0.4rem 0.5rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    background: #fff;
+    width: 100%;
+    transition: all 0.2s;
+}
+.brutal-input:focus { outline: none; background: #E0F2FE; box-shadow: inset 4px 4px 0px rgba(0,0,0,0.05); }
+
+/* Status Notifications */
+.status-box { background-color: #F8FAFC; text-align: center; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; gap: 1rem; }
+.error-box { background-color: var(--expense); text-align: center; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 1rem; }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Summary Grid */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.summary-cards .brutal-card {
+    padding: 0.75rem 1rem;
+}
+.summary-cards h3 { font-size: 0.95rem; opacity: 0.9; display: flex; align-items: center; gap: 0.5rem; font-weight: 800; }
+.summary-cards h2 { font-size: 1.6rem; font-weight: 800; margin-top: 0.25rem; }
+
+/* Tabs Layout */
+.tabs-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 3px double #000;
+}
+.tab-content { animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Table Structure */
+.table-section { background-color: #fff; }
+.table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.table-header h2 { font-weight: 800; font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+
+.table-responsive {
+    overflow-x: auto;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--shadow-solid);
+    background: #fff;
+}
+.brutal-table { width: 100%; border-collapse: collapse; }
+.brutal-table th, .brutal-table td {
+    border: 1.5px solid var(--border-color);
+    padding: 0.85rem;
+    text-align: left;
+}
+.brutal-table th { background-color: var(--primary); font-weight: 800; font-size: 1.05rem; }
+.brutal-table tr { transition: background-color 0.1s; }
+.brutal-table tbody tr:hover { background-color: #E2E8F0; }
+
+/* Daily Total Row! */
+.daily-total-row { background-color: #F1F5F9 !important; }
+.daily-total-row td { border-top: var(--border-width) dashed #000; border-bottom: var(--border-width) solid #000; font-weight: 800; font-size: 1.05rem; }
+
+/* Grand Total Row */
+.grand-total-row { background-color: #E2E8F0 !important; }
+.grand-total-row td { 
+    border-top: 5px double var(--border-color); 
+    border-bottom: 3px solid var(--border-color); 
+    font-weight: 800; 
+    font-size: 1.15rem; 
+}
+
+.text-right { text-align: right !important; }
+.text-income { color: #047857; font-weight: 800; }
+.text-expense { color: #B91C1C; font-weight: 800; }
+
+.no-data-box { background-color: #F1F5F9; text-align: center; margin-top: 1.5rem; font-weight: 800; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; }
+
+@media (max-width: 768px) {
+    body { padding: 1rem; }
+    .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .header-title h1 { font-size: 1.35rem; }
+    .summary-cards { grid-template-columns: 1fr; }
+    #refreshDataBtn { width: 100%; }
+}
+
+@media print {
+    /* Hide everything except the table section */
+    body * { visibility: hidden; }
+    
+    #tableExportSection, #tableExportSection * {
+        visibility: visible;
+    }
+    
+    #tableExportSection {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .table-actions, .tabs-navigation { display: none !important; }
+    
+    .brutal-table { border: 2px solid #000; }
+    
+    @page {
+        margin: 10mm;
+    }
+    
+    /* 1. Ensure table headers repeat on every new page! */
+    .brutal-table thead { display: table-header-group; }
+    
+    /* 2. Prevent a day group from being split across two pages! */
+    .day-group { page-break-inside: avoid; break-inside: avoid; }
+    
+    body { 
+        background-color: #fff; 
+        -webkit-print-color-adjust: exact; 
+        print-color-adjust: exact; 
+    }
+}
