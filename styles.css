@@ -178,12 +178,13 @@ body {
 .table-header h2 { font-weight: 800; font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
 
 .table-responsive {
-    overflow-x: auto;
+    width: 100%;
+    overflow-x: hidden;
     border: var(--border-width) solid var(--border-color);
     box-shadow: var(--shadow-solid);
     background: #fff;
 }
-.brutal-table { width: 100%; border-collapse: collapse; }
+.brutal-table { width: 100%; border-collapse: collapse; table-layout: auto; word-break: break-word; }
 .brutal-table th, .brutal-table td {
     border: 1.5px solid var(--border-color);
     padding: 0.85rem;
@@ -212,12 +213,39 @@ body {
 
 .no-data-box { background-color: #F1F5F9; text-align: center; margin-top: 1.5rem; font-weight: 800; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; }
 
-@media (max-width: 768px) {
-    body { padding: 1rem; }
+/* Charts Layout Grid */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+@media (max-width: 900px) {
+    body { padding: 0.5rem; }
     .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-    .header-title h1 { font-size: 1.35rem; }
-    .summary-cards { grid-template-columns: 1fr; }
-    #refreshDataBtn { width: 100%; }
+    .header-title h1 { font-size: 1.25rem; }
+    .summary-cards { grid-template-columns: 1fr; gap: 0.75rem; }
+    #refreshDataBtn { width: auto; }
+    
+    /* Ensure table fits horizontally by reducing font and padding */
+    .brutal-table th, .brutal-table td {
+        padding: 0.35rem 0.25rem;
+        font-size: 0.8rem;
+    }
+    .brutal-table th { font-size: 0.85rem; }
+    
+    /* Shrink the bold text in tables on mobile */
+    .daily-total-row td, .grand-total-row td {
+        font-size: 0.85rem;
+    }
+
+    /* Stack Charts Underneath each other */
+    .charts-grid { 
+        grid-template-columns: 1fr; 
+    }
+    .charts-grid > div { 
+        height: auto !important; 
+        min-height: 350px; 
+    }
 }
 
 @media print {
