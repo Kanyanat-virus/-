@@ -231,11 +231,15 @@ body {
         padding: 0.35rem 0.2rem;
         font-size: 0.8rem;
     }
-    .brutal-table th { font-size: 0.825rem; }
+    .brutal-table th { font-size: 0.825rem; white-space: normal; line-height: 1.2; }
     
     /* Dedicated Custom Fixes for Mobile Display Real Estate Constraints */
-    .text-right { white-space: nowrap !important; font-size: 0.75rem; letter-spacing: -0.5px; }
-    .brutal-table th:last-child { white-space: nowrap; font-size: 0.75rem; }
+    .text-right { font-size: 0.75rem; letter-spacing: -0.5px; }
+    
+    .brutal-table td { white-space: normal; word-break: break-word; }
+    .brutal-table th:first-child, .brutal-table td:first-child { white-space: nowrap; width: 1%; } /* Keep dates unbroken */
+    .brutal-table td.text-income, .brutal-table td.text-expense { white-space: nowrap; }
+
     .d-year { display: block; font-size: 0.75rem; opacity: 0.85; }
     
     /* Shrink the bold text in tables on mobile */
@@ -251,6 +255,8 @@ body {
         height: auto !important; 
         min-height: 350px; 
     }
+    
+    .m-block { display: block; }
 }
 
 @media print {
@@ -275,6 +281,18 @@ body {
     .table-actions, .tabs-navigation { display: none !important; }
     
     .brutal-table { border: 2px solid #000; }
+    
+    /* Optimize charts height to fit on one single PDF page */
+    .charts-grid > div {
+        height: 380px !important;
+        page-break-inside: avoid;
+    }
+
+    /* Shrink the AI paragraph slightly to ensure room for the graphs */
+    #aiInsightBox {
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
     
     @page {
         margin: 10mm;

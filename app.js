@@ -161,7 +161,7 @@ function setupEventListeners() {
             subtitleSpan.style = "font-size: 1rem; color: #475569; font-weight: normal; margin-left: 0.5rem;";
 
             if (tabId === 'viewDaily') mainSectionTitle.innerHTML = `<i data-lucide="calendar-heart"></i> รายการประจำวัน `;
-            if (tabId === 'viewMonthly') mainSectionTitle.innerHTML = `<i data-lucide="folders"></i> รายงานสรุปประจำเดือนรวมทั้งปี `;
+            if (tabId === 'viewMonthly') mainSectionTitle.innerHTML = `<i data-lucide="folders"></i> รายงานประจำเดือน `;
             if (tabId === 'viewChart') mainSectionTitle.innerHTML = `<i data-lucide="bar-chart-3"></i> กราฟเปรียบเทียบแต่ละเดือน `;
             
             mainSectionTitle.appendChild(subtitleSpan);
@@ -357,20 +357,21 @@ function updateDashboardUI() {
 
     const balance = totals.income - totals.expense;
 
-    document.getElementById('totalIncomeTxt').textContent = formatCurrency(totals.income);
-    document.getElementById('totalExpenseTxt').textContent = formatCurrency(totals.expense);
+    document.getElementById('totalIncomeTxt').textContent = formatCurrency(totals.income) + ' บาท';
+    document.getElementById('totalExpenseTxt').textContent = formatCurrency(totals.expense) + ' บาท';
     
     const balanceEl = document.getElementById('totalNetTxt');
     balanceEl.textContent = formatCurrency(Math.abs(balance));
     
     if(balance > 0) {
         balanceEl.style.color = '#047857';
-        balanceEl.textContent = '+ ' + balanceEl.textContent;
+        balanceEl.textContent = '+ ' + balanceEl.textContent + ' บาท';
     } else if (balance < 0) {
         balanceEl.style.color = '#B91C1C';
-        balanceEl.textContent = '- ' + balanceEl.textContent;
+        balanceEl.textContent = '- ' + balanceEl.textContent + ' บาท';
     } else {
         balanceEl.style.color = 'inherit';
+        balanceEl.textContent = balanceEl.textContent + ' บาท';
     }
 
     renderTable();
@@ -431,7 +432,7 @@ function renderTable() {
         const totalTr = document.createElement('tr');
         totalTr.className = 'daily-total-row';
         totalTr.innerHTML = `
-            <td colspan="2" class="text-right">ยอดรวมของวันที่ ${dateStr}</td>
+            <td colspan="2" class="text-right">ยอดรวม</td>
             <td class="text-right text-income">${formatCurrency(data.inc)}</td>
             <td class="text-right text-expense">${formatCurrency(data.exp)}</td>
             <td></td>
@@ -452,7 +453,7 @@ function renderTable() {
     const grandTr = document.createElement('tr');
     grandTr.className = 'grand-total-row';
     grandTr.innerHTML = `
-        <td colspan="2" class="text-right"><i data-lucide="layers"></i> สรุปยอดรวมสุทธิทั้งตาราง</td>
+        <td colspan="2" class="text-right"><i data-lucide="layers"></i> รวมสุทธิ</td>
         <td class="text-right text-income">${formatCurrency(grandInc)}</td>
         <td class="text-right text-expense">${formatCurrency(grandExp)}</td>
         <td style="color:${grandNet >= 0 ? '#047857' : '#B91C1C'}; white-space: nowrap;" class="text-right">${gSign}${formatCurrency(grandNet)}</td>
@@ -518,7 +519,7 @@ function renderMonthlyViews() {
     const gTr = document.createElement('tr');
     gTr.className = 'grand-total-row';
     gTr.innerHTML = `
-        <td class="text-right"><i data-lucide="award"></i> ยอดรวมสุทธิของปี ${targetYear+543}</td>
+        <td class="text-right"><i data-lucide="award"></i> <span class="m-block" style="display:inline-block;">รวมปี&nbsp;</span><span class="m-block" style="display:inline-block;">${targetYear+543}</span></td>
         <td class="text-right text-income">${formatCurrency(yrInc)}</td>
         <td class="text-right text-expense">${formatCurrency(yrExp)}</td>
         <td class="text-right" style="color:${yrNet >= 0 ? '#047857' : '#B91C1C'}; white-space: nowrap;">${ySign}${formatCurrency(yrNet)}</td>
@@ -530,6 +531,12 @@ function renderMonthlyViews() {
 
     // Chart.js Generation
     renderChart(sortedKeys, monthlyData, targetYear);
+    
+    // Dynamic Subtitle for Monthly/Chart Tabs to explicitly display the Target Year
+    const activeTabObj = document.querySelector('.tab-btn.active');
+    if (activeTabObj && (activeTabObj.getAttribute('data-tab') === 'viewMonthly' || activeTabObj.getAttribute('data-tab') === 'viewChart')) {
+        document.getElementById('tableSubtitle').textContent = `(ประจำปี ${targetYear+543})`;
+    }
 }
 
 function generateAIInsight(totals, mapData, keys) {
@@ -550,10 +557,10 @@ function generateAIInsight(totals, mapData, keys) {
 
     const net = totals.inc - totals.exp;
     let profitFeedback = net > 0 
-        ? `🔥 <span style="color:#047857;">ยอดเยี่ยมมาก! ภาพรวมปีนี้คุณมี <b>กำไรสุทธิสะสมถึง ${formatCurrency(net)} ฿</b></span> รักษาโมเมนตัมธุรกิจนี้ไว้นะครับ!`
-        : `⚠️ <span style="color:#B91C1C;">ช่วงเวลาที่ผ่านมา ธุรกิจกำลังอยู่ในสถานะ <b>ลงทุน/มีรายจ่ายสูงกว่ารายรับ (${formatCurrency(Math.abs(net))} ฿)</b></span> แนะนำให้ประหยัดรายจ่ายส่วนเกินดูครับ`;
+        ? `🔥 <span style="color:#047857;">ยอดเยี่ยมมาก! ภาพรวมปีนี้คุณมี <b>กำไรสุทธิสะสมถึง ${formatCurrency(net)} บาท</b></span> รักษาโมเมนตัมธุรกิจนี้ไว้นะครับ!`
+        : `⚠️ <span style="color:#B91C1C;">ช่วงเวลาที่ผ่านมา ธุรกิจกำลังอยู่ในสถานะ <b>ลงทุน/มีรายจ่ายสูงกว่ารายรับ (${formatCurrency(Math.abs(net))} บาท)</b></span> แนะนำให้ประหยัดรายจ่ายส่วนเกินดูครับ`;
 
-    let actionFeedback = `🌟 เดือนที่ทำผลงานสุดปัง (รายรับสูงสุด) คือ <b>${maxIncMonth}</b> (เทรับไปถึง ${formatCurrency(maxInc)} ฿!)<br>💸 แต่ต้องระวัง ค่าใช้จ่ายบินว่อนสูงสุดในเดือน <b>${maxExpMonth}</b> กวาดเงินออกไปยอด ${formatCurrency(maxExp)} ฿`;
+    let actionFeedback = `🌟 เดือนที่ทำผลงานสุดปัง (รายรับสูงสุด) คือ <b>${maxIncMonth}</b> (เทรับไปถึง ${formatCurrency(maxInc)} บาท!)<br>💸 แต่ต้องระวัง ค่าใช้จ่ายบินว่อนสูงสุดในเดือน <b>${maxExpMonth}</b> กวาดเงินออกไปยอด ${formatCurrency(maxExp)} บาท`;
 
     aiPara.innerHTML = `${profitFeedback}<br><br>${actionFeedback}`;
 }
@@ -598,7 +605,7 @@ function renderChart(keys, mapData, year) {
             labels: trimLabels,
             datasets: [
                 { 
-                    label: 'รายรับ (฿)', data: trimIncomes, backgroundColor: '#34D399', borderRadius: 4,
+                    label: 'รายรับ (บาท)', data: trimIncomes, backgroundColor: '#34D399', borderRadius: 4,
                     datalabels: { 
                         color: '#047857', anchor: 'end', align: 'end', offset: 4, 
                         rotation: -90, font: { weight: '800', size: 12, family: 'Prompt' }, 
@@ -606,7 +613,7 @@ function renderChart(keys, mapData, year) {
                     }
                 },
                 { 
-                    label: 'รายจ่าย (฿)', data: trimExpenses, backgroundColor: '#F87171', borderRadius: 4,
+                    label: 'รายจ่าย (บาท)', data: trimExpenses, backgroundColor: '#F87171', borderRadius: 4,
                     datalabels: { 
                         color: '#B91C1C', anchor: 'end', align: 'end', offset: 4, 
                         rotation: -90, font: { weight: '800', size: 12, family: 'Prompt' }, 
@@ -619,7 +626,7 @@ function renderChart(keys, mapData, year) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                title: { display: true, text: `กราฟแนวนอนเปรียบเทียบรายเดือน (ปี ${year+543})`, font: { size: 16 } },
+                title: { display: true, text: `กราฟแนวนอนเปรียบเทียบรายเดือน (ปี ${year+543})`, font: { size: 16 }, padding: { bottom: 40, top: 10 } },
                 legend: { position: 'bottom' },
                 tooltip: { 
                     mode: 'index', 
@@ -638,7 +645,7 @@ function renderChart(keys, mapData, year) {
                     } 
                 }
             },
-            layout: { padding: { top: 55, right: 15 } },
+            layout: { padding: { top: 20, right: 0, bottom: 0, left: 0 } },
             interaction: { mode: 'index', intersect: false }
         }
     };
