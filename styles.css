@@ -282,9 +282,14 @@ body {
     
     .brutal-table { border: 2px solid #000; }
     
-    /* Optimize charts height to fit on one single PDF page */
+    /* Force charts to stay side-by-side like desktop and fit on one PDF page */
+    .charts-grid {
+        display: grid !important;
+        grid-template-columns: 2fr 1fr !important;
+        gap: 1.5rem !important;
+    }
     .charts-grid > div {
-        height: 380px !important;
+        height: 400px !important;
         page-break-inside: avoid;
     }
 
