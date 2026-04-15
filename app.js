@@ -47,7 +47,7 @@ function handleLogin() {
     const pass = document.getElementById('passwordInput').value;
     const errorMsg = document.getElementById('loginErrorMsg');
     
-    if (user === 'RSYN' && pass === '11093025') {
+    if (user === 'RSYN' && pass === '0809') {
         sessionStorage.setItem('shopAuthed', 'true');
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('mainApp').style.display = 'flex';
